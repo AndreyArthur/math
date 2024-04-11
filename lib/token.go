@@ -1,5 +1,7 @@
 package lib
 
+import "fmt"
+
 type TokenType string
 
 type Token struct {
@@ -25,6 +27,29 @@ const (
 	TOKEN_EOF              = "EOF"
 	TOKEN_ILLEGAL          = "ILLEGAL"
 )
+
+func (token *Token) Debug() {
+	types := map[TokenType]string{
+		"INTEGER": "Integer",
+		"+":       "Plus",
+		"-":       "Minus",
+		"*":       "Asterisk",
+		"/":       "Slash",
+		"^":       "Power",
+		"(":       "Paren",
+		")":       "Paren",
+		"<":       "Less",
+		"<=":      "Less or equal",
+		">":       "Greater",
+		">=":      "Greater or equal",
+		"=":       "Equals",
+		"!=":      "Not equals",
+		"EOF":     "Eof",
+		"ILLEGAL": "Illegal",
+	}
+
+	fmt.Printf("%s %q\n", types[token.Type], token.Literal)
+}
 
 func NewToken(tokenType TokenType, literal string) *Token {
 	return &Token{
