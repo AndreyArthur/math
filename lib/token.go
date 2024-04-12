@@ -51,8 +51,8 @@ func (token *Token) GetTypeString() string {
 	return types[token.Type]
 }
 
-func (token *Token) Debug() {
-	fmt.Printf("%s %q\n", token.GetTypeString(), token.Literal)
+func (token *Token) Debug() string {
+	return fmt.Sprintf("%s %q", token.GetTypeString(), token.Literal)
 }
 
 func NewToken(tokenType TokenType, literal string) *Token {
