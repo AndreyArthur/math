@@ -31,10 +31,11 @@ var precedences = map[TokenType]int{
 }
 
 type Parser struct {
-	tokens   []*Token
-	position int
-	current  *Token
-	Errors   []string
+	tokens       []*Token
+	position     int
+	current      *Token
+	errors       []string
+	isComparison bool
 }
 
 func (parser *Parser) next() {
@@ -60,7 +61,7 @@ func (parser *Parser) expect(offset int, expectedType TokenType) bool {
 			NewToken(expectedType, "").GetTypeString(),
 			token.GetTypeString(),
 		)
-		parser.Errors = append(parser.Errors, message)
+		parser.errors = append(parser.errors, message)
 		return false
 	}
 	return true
@@ -74,7 +75,7 @@ func (parser *Parser) parseIntegerLiteral() *AstIntegerLiteral {
 				"Could not parse %q as integer.",
 				parser.current.Literal,
 			)
-			parser.Errors = append(parser.Errors, msg)
+			parser.errors = append(parser.errors, msg)
 			return nil
 		}
 		token := *parser.current
@@ -164,7 +165,7 @@ func (parser *Parser) pre() {
 				"Found an illegal token %q.",
 				token.Literal,
 			)
-			parser.Errors = append(parser.Errors, message)
+			parser.errors = append(parser.errors, message)
 		}
 
 		if token.Type == TOKEN_OPEN_PAREN &&
@@ -175,7 +176,7 @@ func (parser *Parser) pre() {
 				"Opening parenthesis must be followed by numbers or minus sign. Found %q.",
 				parser.peek(index+1).Literal,
 			)
-			parser.Errors = append(parser.Errors, message)
+			parser.errors = append(parser.errors, message)
 		}
 
 		if token.Type == TOKEN_CLOSE_PAREN &&
@@ -185,7 +186,7 @@ func (parser *Parser) pre() {
 				"Closing parenthesis must be preceded by numbers. Found %q.",
 				parser.peek(index-1).Literal,
 			)
-			parser.Errors = append(parser.Errors, message)
+			parser.errors = append(parser.errors, message)
 		}
 
 		if token.Type == TOKEN_INTEGER &&
@@ -195,14 +196,26 @@ func (parser *Parser) pre() {
 				token.Literal,
 				parser.peek(index+1).Literal,
 			)
-			parser.Errors = append(parser.Errors, message)
+			parser.errors = append(parser.errors, message)
 		}
+	}
+
+	if comparisonTokenCount > 0 {
+		parser.isComparison = true
 	}
 
 	if comparisonTokenCount > 1 {
 		message := "Cannot make more than one comparision per expression."
-		parser.Errors = append(parser.Errors, message)
+		parser.errors = append(parser.errors, message)
 	}
+}
+
+func (parser *Parser) GetErrors() []string {
+	return parser.errors
+}
+
+func (parser *Parser) IsComparison() bool {
+	return parser.isComparison
 }
 
 func (parser *Parser) Parse() AstExpression {
@@ -215,7 +228,7 @@ func NewParser(tokens []*Token) *Parser {
 	parser := &Parser{
 		tokens:   tokens,
 		position: 0,
-		Errors:   []string{},
+		errors:   []string{},
 	}
 	parser.current = parser.tokens[parser.position]
 	return parser

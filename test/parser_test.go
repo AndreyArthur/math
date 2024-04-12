@@ -74,7 +74,7 @@ func TestParserErrorHandling(t *testing.T) {
 		`Expected Token of type "Integer", but got token of type "Plus".`,
 	}
 
-	for index, message := range parser.Errors {
+	for index, message := range parser.GetErrors() {
 		if message != expectedMessages[index] {
 			t.Fatalf(
 				"Expected message: %s.\n               But got:          %s",

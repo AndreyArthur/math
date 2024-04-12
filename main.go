@@ -58,9 +58,10 @@ func Repl(in io.Reader, out io.Writer) {
 			tokens := lexer.Lex()
 			parser := lib.NewParser(tokens)
 			root := parser.Parse()
+			errors := parser.GetErrors()
 
-			if len(parser.Errors) != 0 {
-				for _, message := range parser.Errors {
+			if len(errors) > 0 {
+				for _, message := range errors {
 					fmt.Println("Error:", message)
 				}
 			} else {
@@ -72,13 +73,24 @@ func Repl(in io.Reader, out io.Writer) {
 			parser := lib.NewParser(tokens)
 			root := parser.Parse()
 			evaluator := lib.NewEvaluator(root)
+			errors := parser.GetErrors()
 
-			if len(parser.Errors) != 0 {
-				for _, message := range parser.Errors {
+			if len(errors) > 0 {
+				for _, message := range errors {
 					fmt.Println("Error:", message)
 				}
 			} else {
-				fmt.Println(evaluator.Eval())
+				value := evaluator.Eval()
+
+				if parser.IsComparison() {
+					if value == 1 {
+						fmt.Println("true")
+					} else {
+						fmt.Println("false")
+					}
+				} else {
+					fmt.Println(value)
+				}
 			}
 		}
 	}
