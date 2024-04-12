@@ -11,9 +11,9 @@ import (
 
 func Repl(in io.Reader, out io.Writer) {
 	fmt.Println("Welcome to the Meth language REPL!")
-	mode := "parse"
+	mode := "eval"
 	fmt.Printf(
-		"Select a mode by typing \"mode lex | parse\" (default: %s).\n",
+		"Select a mode by typing \"mode lex | parse | eval\" (default: %s).\n",
 		mode,
 	)
 	prompt := ">> "
@@ -40,6 +40,12 @@ func Repl(in io.Reader, out io.Writer) {
 			continue
 		}
 
+		if strings.HasPrefix(line, "mode ev") {
+			mode = "eval"
+			fmt.Println("Switched to the eval mode.")
+			continue
+		}
+
 		if mode == "lex" {
 			lexer := lib.NewLexer(line)
 			tokens := lexer.Lex()
@@ -59,6 +65,20 @@ func Repl(in io.Reader, out io.Writer) {
 				}
 			} else {
 				fmt.Println(root.Debug())
+			}
+		} else {
+			lexer := lib.NewLexer(line)
+			tokens := lexer.Lex()
+			parser := lib.NewParser(tokens)
+			root := parser.Parse()
+			evaluator := lib.NewEvaluator(root)
+
+			if len(parser.Errors) != 0 {
+				for _, message := range parser.Errors {
+					fmt.Println("Error:", message)
+				}
+			} else {
+				fmt.Println(evaluator.Eval())
 			}
 		}
 	}
