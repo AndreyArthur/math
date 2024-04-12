@@ -11,10 +11,13 @@ import (
 
 func Repl(in io.Reader, out io.Writer) {
 	fmt.Println("Welcome to the Meth language REPL!")
-	fmt.Println("Select a mode by typing \"mode lex\" (default: lex).")
+	mode := "parse"
+	fmt.Printf(
+		"Select a mode by typing \"mode lex | parse\" (default: %s).\n",
+		mode,
+	)
 	prompt := ">> "
 	scanner := bufio.NewScanner(in)
-	mode := "lex"
 
 	for {
 		fmt.Fprint(out, prompt)
@@ -31,13 +34,26 @@ func Repl(in io.Reader, out io.Writer) {
 			continue
 		}
 
+		if strings.HasPrefix(line, "mode pars") {
+			mode = "parse"
+			fmt.Println("Switched to the parse mode.")
+			continue
+		}
+
 		if mode == "lex" {
 			lexer := lib.NewLexer(line)
 			tokens := lexer.Lex()
 
 			for _, token := range tokens {
-				token.Debug()
+				fmt.Println(token.Debug())
 			}
+		} else if mode == "parse" {
+			lexer := lib.NewLexer(line)
+			tokens := lexer.Lex()
+			parser := lib.NewParser(tokens)
+			root := parser.Parse()
+
+			fmt.Println(root.Debug())
 		}
 	}
 }
