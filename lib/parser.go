@@ -147,7 +147,18 @@ func (parser *Parser) parseExpression(precedence int) AstExpression {
 }
 
 func (parser *Parser) pre() {
+	comparisonTokenCount := 0
+
 	for index, token := range parser.tokens {
+		if token.Literal == "=" ||
+			token.Literal == "!=" ||
+			token.Literal == "<" ||
+			token.Literal == ">" ||
+			token.Literal == "<=" ||
+			token.Literal == ">=" {
+			comparisonTokenCount += 1
+		}
+
 		if token.Type == TOKEN_ILLEGAL {
 			message := fmt.Sprintf(
 				"Found an illegal token %q.",
@@ -176,6 +187,21 @@ func (parser *Parser) pre() {
 			)
 			parser.Errors = append(parser.Errors, message)
 		}
+
+		if token.Type == TOKEN_INTEGER &&
+			parser.peek(index+1).Type == TOKEN_INTEGER {
+			message := fmt.Sprintf(
+				"Found a number %q followed by another number %q.",
+				token.Literal,
+				parser.peek(index+1).Literal,
+			)
+			parser.Errors = append(parser.Errors, message)
+		}
+	}
+
+	if comparisonTokenCount > 1 {
+		message := "Cannot make more than one comparision per expression."
+		parser.Errors = append(parser.Errors, message)
 	}
 }
 
