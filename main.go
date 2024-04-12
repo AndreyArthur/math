@@ -53,7 +53,13 @@ func Repl(in io.Reader, out io.Writer) {
 			parser := lib.NewParser(tokens)
 			root := parser.Parse()
 
-			fmt.Println(root.Debug())
+			if len(parser.Errors) != 0 {
+				for _, message := range parser.Errors {
+					fmt.Println("Error:", message)
+				}
+			} else {
+				fmt.Println(root.Debug())
+			}
 		}
 	}
 }
