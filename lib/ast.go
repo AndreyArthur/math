@@ -22,7 +22,10 @@ func (integerLiteral *AstIntegerLiteral) TokenLiteral() string {
 	return integerLiteral.Token.Literal
 }
 func (integerLiteral *AstIntegerLiteral) Debug() string {
-	return integerLiteral.Token.Literal
+	if integerLiteral != nil {
+		return integerLiteral.Token.Literal
+	}
+	return "?"
 }
 
 type AstPrefixExpression struct {
@@ -40,7 +43,11 @@ func (prefixExpression *AstPrefixExpression) Debug() string {
 
 	out.WriteString("(")
 	out.WriteString(prefixExpression.Operator)
-	out.WriteString(prefixExpression.Right.Debug())
+	if prefixExpression.Right != nil {
+		out.WriteString(prefixExpression.Right.Debug())
+	} else {
+		out.WriteString("?")
+	}
 	out.WriteString(")")
 
 	return out.String()
@@ -61,9 +68,17 @@ func (infixExpression *AstInfixExpression) Debug() string {
 	var out bytes.Buffer
 
 	out.WriteString("(")
-	out.WriteString(infixExpression.Left.Debug())
+	if infixExpression.Left != nil {
+		out.WriteString(infixExpression.Left.Debug())
+	} else {
+		out.WriteString("?")
+	}
 	out.WriteString(" " + infixExpression.Operator + " ")
-	out.WriteString(infixExpression.Right.Debug())
+	if infixExpression.Right != nil {
+		out.WriteString(infixExpression.Right.Debug())
+	} else {
+		out.WriteString("?")
+	}
 	out.WriteString(")")
 
 	return out.String()
