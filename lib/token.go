@@ -28,7 +28,7 @@ const (
 	TOKEN_ILLEGAL          = "ILLEGAL"
 )
 
-func (token *Token) Debug() {
+func (token *Token) GetTypeString() string {
 	types := map[TokenType]string{
 		"INTEGER": "Integer",
 		"+":       "Plus",
@@ -48,7 +48,11 @@ func (token *Token) Debug() {
 		"ILLEGAL": "Illegal",
 	}
 
-	fmt.Printf("%s %q\n", types[token.Type], token.Literal)
+	return types[token.Type]
+}
+
+func (token *Token) Debug() {
+	fmt.Printf("%s %q\n", token.GetTypeString(), token.Literal)
 }
 
 func NewToken(tokenType TokenType, literal string) *Token {
