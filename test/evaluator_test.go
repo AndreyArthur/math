@@ -6,7 +6,7 @@ import (
 )
 
 func TestEvaluatorEvalNumbers(t *testing.T) {
-	content := "(2 ^ (5 - 3) * 5 + 4) / 4"
+	content := "(2 ^ (5 - 3) * 5 + 4) / (16 % 6)"
 
 	tokens := lib.NewLexer(content).Lex()
 	root := lib.NewParser(tokens).Parse()

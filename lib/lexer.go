@@ -62,6 +62,10 @@ func (lexer *Lexer) next() *Token {
 		token := NewToken(TOKEN_SLASH, string(lexer.current))
 		lexer.advance()
 		return token
+	case '%':
+		token := NewToken(TOKEN_MODULUS, string(lexer.current))
+		lexer.advance()
+		return token
 	case '^':
 		token := NewToken(TOKEN_POWER, string(lexer.current))
 		lexer.advance()

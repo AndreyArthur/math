@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"math"
 	"meth/lib"
 	"os"
 	"strings"
@@ -88,6 +89,8 @@ func Repl(in io.Reader, out io.Writer) {
 					} else {
 						fmt.Println("false")
 					}
+				} else if value == int64(math.Inf(1)) {
+					fmt.Println(value, "(Infinity)")
 				} else {
 					fmt.Println(value)
 				}

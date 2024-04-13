@@ -1,5 +1,7 @@
 package lib
 
+import "math"
+
 type Evaluator struct {
 	ast   AstExpression
 	value int64
@@ -52,7 +54,14 @@ func eval(astNode AstExpression) int64 {
 			return eval(infixNode.Left) * eval(infixNode.Right)
 		}
 		if infixNode.Operator == "/" {
-			return eval(infixNode.Left) / eval(infixNode.Right)
+			right := eval(infixNode.Right)
+			if right == 0 {
+				return int64(math.Inf(1))
+			}
+			return eval(infixNode.Left) / right
+		}
+		if infixNode.Operator == "%" {
+			return eval(infixNode.Left) % eval(infixNode.Right)
 		}
 		if infixNode.Operator == "^" {
 			base := eval(infixNode.Left)

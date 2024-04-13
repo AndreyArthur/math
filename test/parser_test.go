@@ -6,12 +6,12 @@ import (
 )
 
 func TestParserDefaultPrecedence(t *testing.T) {
-	content := "5 - -2 / 7 ^ 3 != 70 / -5 + 8"
+	content := "5 - -2 / 7 ^ 3 != 70 % -5 + 8"
 
 	tokens := lib.NewLexer(content).Lex()
 	root := lib.NewParser(tokens).Parse()
 
-	expected := "((5 - ((-2) / (7 ^ 3))) != ((70 / (-5)) + 8))"
+	expected := "((5 - ((-2) / (7 ^ 3))) != ((70 % (-5)) + 8))"
 	got := root.Debug()
 
 	if expected != got {

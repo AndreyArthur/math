@@ -15,6 +15,7 @@ const (
 	TOKEN_MINUS            = "-"
 	TOKEN_ASTERISK         = "*"
 	TOKEN_SLASH            = "/"
+	TOKEN_MODULUS          = "%"
 	TOKEN_POWER            = "^"
 	TOKEN_OPEN_PAREN       = "("
 	TOKEN_CLOSE_PAREN      = ")"
@@ -35,6 +36,7 @@ func (token *Token) GetTypeString() string {
 		"-":       "Minus",
 		"*":       "Asterisk",
 		"/":       "Slash",
+		"%":       "Modulus",
 		"^":       "Power",
 		"(":       "Paren",
 		")":       "Paren",
